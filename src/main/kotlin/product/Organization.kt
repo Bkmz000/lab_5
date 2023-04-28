@@ -6,24 +6,28 @@ class Organization private constructor(
     private val id: Int,
     private val name: String,
     private val fullName: String,
-    private val type: OrganizationType = OrganizationType.COMMERCIAL){
+    private val type: OrganizationType,
+    ){
 
-    data class Builder(
-        private var id: Int = LocalDateTime.now().second,
+    data class Builder (
         private var name: String? = null,
         private var fullName: String? = null,
         private var type: OrganizationType? = null,
     ){
+
         fun name(name: String) = apply { this.name = name }
         fun fullName(fullName: String) = apply { this.fullName = fullName }
         fun type(type: OrganizationType) = apply { this.type = type }
 
-        private fun isBuildEnough(): Boolean {
-            return !(name.isNullOrEmpty() || fullName.isNullOrEmpty() || type == null )
-        }
+        private fun isBuildEnough() = !(name.isNullOrEmpty() || fullName.isNullOrEmpty() || type == null )
 
-        fun build() {
-            if (isBuildEnough()) Organization(id ,name!!,fullName!!,type!!) else null
+
+        fun build(): Organization? {
+            if (isBuildEnough()){
+                val id = LocalDateTime.now().nano - LocalDateTime.of(1900,1,1,1,1).nano
+                return Organization(id,name!!,fullName!!,type!!)
+            } else
+                return null
         }
     }
 
@@ -45,4 +49,10 @@ class Organization private constructor(
         val prime = 345353
         return id * prime
     }
+
+    override fun toString(): String {
+        return "Organization(id=$id, name='$name', fullName='$fullName', type=$type)"
+    }
+
+
 }

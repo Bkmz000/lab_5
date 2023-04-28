@@ -2,14 +2,19 @@ package app
 
 import product.Organization
 import product.OrganizationType
+import product.Product
 
 class App {
-    fun start(){
+   fun start(){
         val org = Organization.Builder()
             .name("Guci")
             .type(OrganizationType.COMMERCIAL)
             .fullName("Prada")
-            .build()
-        println(org)
+        println(org.toString())
+
+        val prod = Product.Builder()
+            .name("fdfd")
+        println(prod)
+
     }
 }

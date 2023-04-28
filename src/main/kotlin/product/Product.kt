@@ -2,30 +2,41 @@ package product
 import java.time.LocalDateTime
 
 
-class Product {
-    val id: Int
-    private val name: String
-    private val coordinates: Coordinates
-    private val creationDate: LocalDateTime
-    private val price: Int
-    private val unitOfMeasure: UnitOfMeasure
-    private val manufacturer: Organization
-
-    constructor(
-        id: Int,
-        name: String,
-        coordinates: Coordinates,
-        price: Int,
-        unitOfMeasure: UnitOfMeasure,
-        manufacturer: Organization
+class Product private constructor(
+    val id: Int,
+    val name: String,
+    val coordinates: Coordinates,
+    val creationDate: LocalDateTime,
+    val price: Int,
+    val unitOfMeasure: UnitOfMeasure,
+    val manufacturer: Organization,
+){
+    data class Builder(
+        var name: String? = null,
+        var coordinates: Coordinates? = null,
+        var creationDate: LocalDateTime? = null,
+        var price: Int? = null,
+        var unitOfMeasure: UnitOfMeasure? = null,
+        var manufacturer: Organization? = null,
     ) {
-        this.id = id
-        this.name = name
-        this.coordinates = coordinates
-        this.creationDate = LocalDateTime.now()
-        this.price = price
-        this.unitOfMeasure = unitOfMeasure
-        this.manufacturer = manufacturer
+        fun name(name: String) = apply { this.name = name }
+        fun coordinates(coordinates: Coordinates) = apply { this.coordinates = coordinates }
+        fun price(price: Int) = apply { this.price = price }
+        fun unitOfMeasure(unitOfMeasure: UnitOfMeasure) = apply { this.unitOfMeasure = unitOfMeasure }
+        fun manufacturer(manufacturer: Organization) = apply { this.manufacturer = manufacturer }
+
+        private fun isBuildEnough() = !(name.isNullOrEmpty() || coordinates == null || price == null
+                || unitOfMeasure == null || manufacturer == null)
+
+
+        fun build(): Product? {
+            if (isBuildEnough()) {
+                val id = LocalDateTime.now().nano - LocalDateTime.of(1900,1,1,1,1).nano
+                val currentTime = LocalDateTime.now()
+                return Product(id,name!!,coordinates!!,currentTime,price!!,unitOfMeasure!!,manufacturer!!)
+            } else
+                return null
+        }
     }
 
     override fun equals(other: Any?): Boolean {
@@ -42,6 +53,10 @@ class Product {
     override fun hashCode(): Int {
         val prime = 14542343
         return id * prime
+    }
+
+    override fun toString(): String {
+        return "Product(id=$id, name='$name', coordinates=$coordinates, creationDate=$creationDate, price=$price, unitOfMeasure=$unitOfMeasure, manufacturer=$manufacturer)"
     }
 
 
