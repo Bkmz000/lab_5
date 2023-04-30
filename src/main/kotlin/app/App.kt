@@ -1,27 +1,20 @@
 package app
 
-import product.Organization
-import product.OrganizationType
+import app.collection.ProductCollection
+import app.command.CommandProcessor
+import app.command.collection.AddProductInCollection
+import product.Coordinates
 import product.Product
-import java.util.TreeMap
+import product.UnitOfMeasure
 
 class App {
    fun start(){
-       val map1 = TreeMap<Int,Int>()
-       map1.put(1,1)
-       map1.put(2,1)
 
-       val map2 = map1.toMutableMap() as TreeMap<Int,Int>
-       map2[1] = 10
+        val col = ProductCollection()
+        val add = AddProductInCollection(1,col)
+        CommandProcessor.process(add)
+       println(col.products[1])
 
-       for (i in map1.keys){
-           println(map1[i])
-       }
-
-       for (i in map2.keys){
-           println(map2[i])
-       }
-       println(map2.javaClass)
 
 
 

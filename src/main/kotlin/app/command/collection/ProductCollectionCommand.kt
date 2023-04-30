@@ -4,10 +4,10 @@ import app.collection.ProductCollection
 import product.Product
 import java.util.TreeMap
 
-abstract class ProductCollectionCommand (private val collection: ProductCollection) {
+abstract class ProductCollectionCommand (val collection: ProductCollection) {
     private var preCommandState = TreeMap<Int, Product>()
 
-    abstract fun execute()
+    abstract suspend fun execute()
 
     fun saveState(){
         preCommandState = TreeMap<Int, Product>(collection.products)

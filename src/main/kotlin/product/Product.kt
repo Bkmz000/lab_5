@@ -1,5 +1,6 @@
 package product
 import java.time.LocalDateTime
+import java.time.ZoneId
 
 
 class Product private constructor(
@@ -9,7 +10,7 @@ class Product private constructor(
     val creationDate: LocalDateTime,
     val price: Int,
     val unitOfMeasure: UnitOfMeasure,
-    val manufacturer: Organization,
+    //val manufacturer: Organization, tostring определать
 ){
     data class Builder(
         var name: String? = null,
@@ -26,16 +27,16 @@ class Product private constructor(
         fun manufacturer(manufacturer: Organization) = apply { this.manufacturer = manufacturer }
 
         private fun isBuildEnough() = !(name.isNullOrEmpty() || coordinates == null || price == null
-                || unitOfMeasure == null || manufacturer == null)
+                || unitOfMeasure == null)
 
 
         fun build(): Product? {
-            if (isBuildEnough()) {
+            return if (isBuildEnough()) {
                 val id = LocalDateTime.now().nano - LocalDateTime.of(1900,1,1,1,1).nano
                 val currentTime = LocalDateTime.now()
-                return Product(id,name!!,coordinates!!,currentTime,price!!,unitOfMeasure!!,manufacturer!!)
+                Product(id,name!!,coordinates!!,currentTime,price!!,unitOfMeasure!!)
             } else
-                return null
+                null
         }
     }
 
@@ -56,7 +57,7 @@ class Product private constructor(
     }
 
     override fun toString(): String {
-        return "Product(id=$id, name='$name', coordinates=$coordinates, creationDate=$creationDate, price=$price, unitOfMeasure=$unitOfMeasure, manufacturer=$manufacturer)"
+        return "Product(id=$id, name='$name', coordinates=$coordinates, creationDate=$creationDate, price=$price, unitOfMeasure=$unitOfMeasure)"
     }
 
 

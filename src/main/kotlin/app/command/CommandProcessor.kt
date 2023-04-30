@@ -3,6 +3,7 @@ package app.command
 import app.command.collection.ProductCollectionCommand
 import kotlinx.coroutines.*
 import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.channels.drop
 import java.util.concurrent.Executors
 
 object CommandProcessor {

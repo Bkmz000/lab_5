@@ -1,68 +1,67 @@
 package app.command.collection
 
 import app.collection.ProductCollection
+import product.Coordinates
 import product.Product
+import product.UnitOfMeasure
 
 class AddProductInCollection(val id: Int, collection: ProductCollection) : ProductCollectionCommand(collection) {
 
-   private var currentField: Fields = Fields.NAME
-   private val fields = listOf<Fields>(Fields.NAME,Fields.COORDINATES,Fields.PRICE,Fields.UNIT_OF_MEASURE,Fields.MANUFACTURER)
-   private var isEnough = false
    private val product = Product.Builder()
 
-   override fun execute() {
+   override suspend fun execute() {
        saveState()
-       var isEnd = false
-       while(!isEnd){
-           println("Write down the fields values:")
-           ::getName
-
-       }
-
+       println("Write down the fields values:")
+       getName()
+       getCoordinate()
+       getPrice()
+       getUnitOfMeasure()
+       val ex =  product.build()
+       if(ex != null) collection.products.put(id,ex)
    }
 
    private fun getName(){
-       println("name: ")
-       product.name = customReadLine(it: String -> it != null)
+       product.name(customReadLine("name: ") { s: String -> true })
    }
 
    private fun getCoordinate(){
        println("coordinate: ")
-       println("x: ")
-       val x = customReadLine().toInt()
-       println("y: ")
-       val y = customReadLine().toInt()
+       val x = customReadLine("x: ") {s: String -> s.toIntOrNull() != null}
+       val y = customReadLine("y: ") {s: String -> s.toDoubleOrNull() != null}
+       product.coordinates(Coordinates(x.toInt(),y.toDouble()))
    }
-    private fun get
-    private fun customReadLine(condition: String?.() -> Boolean): String?{
-        var messageFromUser:String?
-        var isCorrect = false
-        while (!isCorrect){
-            messageFromUser = readlnOrNull()
-            if(condition(messageFromUser)){
-                return messageFromUser
-                isCorrect = true
-            } else {
-                println("Message is incorrect. Please try again!")
+
+    private fun getPrice(){
+        val price = customReadLine("price: ") { s: String -> s.toIntOrNull() != null }
+        product.price(price.toInt())
+    }
+    private fun getUnitOfMeasure(){
+        fun checkIfUnitOfMeasure(s:String):Boolean{
+            try {
+                UnitOfMeasure.valueOf(s)
+            } catch (e: IllegalArgumentException){
+                return false
             }
+            return true
         }
-        return throw Error("Error")
-    }
-
-    private interface Condition{
-        fun check(s: String): Boolean
+        val unitOfMeasure = customReadLine("unit if measure: ${enumValues<UnitOfMeasure>().asList()} ") { s:String -> checkIfUnitOfMeasure(s) }
+        product.unitOfMeasure(UnitOfMeasure.valueOf(unitOfMeasure))
     }
 
 
-
-
-   private enum class Fields {
-        NAME,
-        COORDINATES,
-        PRICE,
-        UNIT_OF_MEASURE,
-        MANUFACTURER,
-   }
+    private fun customReadLine(prefixString: String,condition: (String) -> Boolean): String{
+        var messageFromUser:String
+        while (true){
+            print(prefixString)
+            readln().also { messageFromUser = it }
+            if(messageFromUser.isNotEmpty()){
+                if(condition(messageFromUser)){
+                    return messageFromUser
+                }
+            }
+            println("Message is incorrect. Please try again!")
+        }
+    }
 
 
 }
