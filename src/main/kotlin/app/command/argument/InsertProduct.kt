@@ -1,30 +1,27 @@
-package app.command.collection
+package app.command.argument
 
 import app.collection.ProductCollection
 import product.*
 
-class AddProductInCollection : ProductCollectionCommand() {
+
+class InsertProduct(arg :Int) : ArgumentCommand() {
+
+    companion object{
+        const val name = "insert"
+    }
+
+
+
+
 
     private val product = Product.Builder()
 
-    private var productId:Int? = null
+    private var productId:Int? = arg
 
 
-    override fun getTypeOfParameter(): Any? {
-        return Int
-    }
-    override fun setParameter(param: Any): Boolean {
-        return if(!ProductCollection.products.contains(param)){
-            this.productId = param as Int
-            true
-        } else {
-            false
-        }
-    }
 
-   override fun execute() {
+    override fun execute(): String? {
        if (productId != null) {
-           saveState()
            println("Write down the fields values: ")
            setName()
            setCoordinate()
@@ -38,7 +35,8 @@ class AddProductInCollection : ProductCollectionCommand() {
        } else {
            println("Product with this id already exists or id is incorrect.")
        }
-   }
+    return null
+    }
 
    private fun setName(){
        product.name(readLineUntilCondition("name: ") { true })
@@ -107,6 +105,7 @@ class AddProductInCollection : ProductCollectionCommand() {
             println("Message is incorrect. Please try again!")
         }
     }
+
 
     override fun toString(): String {
         return "add"

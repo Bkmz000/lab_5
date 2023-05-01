@@ -6,9 +6,7 @@ import java.util.*
 object ProductCollection {
     var products: TreeMap<Int, Product> = TreeMap()
 
-    fun add(product: Product): Unit {
-        products[product.id] = product
-    }
+
 
 
 }
