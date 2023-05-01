@@ -4,17 +4,22 @@ import app.collection.ProductCollection
 import product.Product
 import java.util.TreeMap
 
-abstract class ProductCollectionCommand (val collection: ProductCollection) {
+abstract class ProductCollectionCommand () {
+
     private var preCommandState = TreeMap<Int, Product>()
 
-    abstract suspend fun execute()
+    abstract fun execute()
+
+    abstract fun getTypeOfParameter() : Any?
+
+    abstract fun setParameter(param: Any) : Boolean
 
     fun saveState(){
-        preCommandState = TreeMap<Int, Product>(collection.products)
+        preCommandState = TreeMap<Int, Product>(ProductCollection.products)
     }
 
     fun undo(){
         println("undo $this")
-        collection.products = TreeMap<Int,Product>(preCommandState)
+        ProductCollection.products = TreeMap<Int,Product>(preCommandState)
     }
 }

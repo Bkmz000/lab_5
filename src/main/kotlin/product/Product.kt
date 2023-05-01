@@ -6,11 +6,11 @@ import java.time.ZoneId
 class Product private constructor(
     val id: Int,
     val name: String,
-    val coordinates: Coordinates,
-    val creationDate: LocalDateTime,
-    val price: Int,
-    val unitOfMeasure: UnitOfMeasure,
-    //val manufacturer: Organization, tostring определать
+    private val coordinates: Coordinates,
+    private val creationDate: LocalDateTime,
+    private val price: Int,
+    private val unitOfMeasure: UnitOfMeasure,
+    private val manufacturer: Organization,
 ){
     data class Builder(
         var name: String? = null,
@@ -27,14 +27,14 @@ class Product private constructor(
         fun manufacturer(manufacturer: Organization) = apply { this.manufacturer = manufacturer }
 
         private fun isBuildEnough() = !(name.isNullOrEmpty() || coordinates == null || price == null
-                || unitOfMeasure == null)
+                || unitOfMeasure == null || manufacturer == null)
 
 
         fun build(): Product? {
             return if (isBuildEnough()) {
                 val id = LocalDateTime.now().nano - LocalDateTime.of(1900,1,1,1,1).nano
                 val currentTime = LocalDateTime.now()
-                Product(id,name!!,coordinates!!,currentTime,price!!,unitOfMeasure!!)
+                Product(id,name!!,coordinates!!,currentTime,price!!,unitOfMeasure!!,manufacturer!!)
             } else
                 null
         }
@@ -57,7 +57,14 @@ class Product private constructor(
     }
 
     override fun toString(): String {
-        return "Product(id=$id, name='$name', coordinates=$coordinates, creationDate=$creationDate, price=$price, unitOfMeasure=$unitOfMeasure)"
+        return """Product(
+            |id= $id 
+            |name= $name 
+            |coordinates= $coordinates 
+            |creationDate= $creationDate 
+            |price= $price 
+            |unitOfMeasure= $unitOfMeasure 
+            |manufacturer= $manufacturer)""".trimMargin()
     }
 
 
