@@ -19,7 +19,6 @@ class InsertProduct(arg :Int) : ArgumentCommand() {
     private var productId:Int? = arg
 
 
-
     override fun execute(): String? {
        if (productId != null) {
            println("Write down the fields values: ")

@@ -6,7 +6,10 @@ import app.command.ClientCommand
 import app.command.argument.InsertProduct
 import app.command.cli.CommandInterpretation
 import app.command.cli.CommandReaderCLI
+import kotlin.reflect.KClass
 import kotlin.reflect.full.*
+import kotlin.reflect.jvm.javaField
+import kotlin.reflect.jvm.reflect
 
 class App {
    @OptIn(ExperimentalStdlibApi::class)
@@ -25,10 +28,13 @@ class App {
 
        }
        println(ProductCollection.products)
+//        val n: KClass<Int> = Int::class
+//       println(n)
+
 
 //       val a = Class.forName(AllCommandNames.argumentCommand["insert"]).kotlin
 //       val b = a.primaryConstructor!!
-//        var c = b.findParameterByName("arg")!!.type::javaClass
+//        var c = a::class.va
 //       println(c)
 //       val g = Class<Int>::kotlin
 //       println(g)

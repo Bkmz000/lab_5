@@ -9,7 +9,7 @@ object CommandInterpretation {
 
 
     fun interpretation(listOfWords: MutableList<String>): Pair<KFunction<Any>,Any>?{
-        return checkIfMessageIsArgumentCommand(listOfWords) ?: null
+        return checkIfMessageIsArgumentCommand(listOfWords)
 
 
 
@@ -24,8 +24,11 @@ object CommandInterpretation {
                 val instanceOfConstructor = createInstanceOfConstructorArgCommand(name)
 
                 val typeOfArg = getTypeOfArg(instanceOfConstructor)
-                val argument =  listOfWords[1].convertTo(typeOfArg)
-                return Pair(instanceOfConstructor, argument)
+
+                return when(val  argument =  listOfWords[1].castTo(typeOfArg)){
+                    is Outcome.Success -> Pair(instanceOfConstructor, argument)
+                    is Outcome.Error -> null
+                }
             }
         }
         return null
@@ -41,14 +44,30 @@ object CommandInterpretation {
         }
     }
 
-    private fun String.convertTo(type: String) : Any{
-        when(type){
-            "kotlin.Int" -> return this.toInt()
-            "kotlin.Double" -> return this.toDouble()
+    private fun String.castTo(type: String) : Outcome<Any> = try {
+            var castedArg: Any
+            when (type) {
+                "kotlin.Int" -> {
+                    castedArg = this.toInt()
+                    Outcome.Success(castedArg)
+                }
+                "kotlin.Double" -> {
+                    castedArg = this.toDouble()
+                    Outcome.Success(castedArg)
+                }
+            }
+            castedArg = this
+            Outcome.Success(castedArg)
+        } catch (ex: NumberFormatException){
+            Outcome.Error("Invalid type of argument!")
         }
-        return this
-    }
+
     private fun <T> getTypeOfArg(constructor: KFunction<T>): String{
         return constructor.findParameterByName("arg")?.type.toString()
+    }
+
+    sealed class Outcome<out T : Any> {
+        data class Success<out T : Any>(val value: T) : Outcome<T>()
+        data class Error(val message: String, val cause: Exception? = null) : Outcome<Nothing>()
     }
 }
