@@ -4,16 +4,11 @@ import app.collection.ProductCollection
 import product.*
 
 
-class InsertProduct(arg :Int) : ArgumentCommand() {
+class InsertProduct(override val arg :Int) : ArgumentCommand(arg) {
 
     companion object{
         const val name = "insert"
     }
-
-
-
-
-
     private val product = Product.Builder()
 
     private var productId:Int? = arg
@@ -107,6 +102,6 @@ class InsertProduct(arg :Int) : ArgumentCommand() {
 
 
     override fun toString(): String {
-        return "add"
+        return "insert"
     }
 }

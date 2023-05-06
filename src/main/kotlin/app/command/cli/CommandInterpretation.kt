@@ -9,7 +9,10 @@ object CommandInterpretation {
 
 
     fun interpretation(listOfWords: MutableList<String>): Pair<KFunction<Any>,Any>?{
-        return checkIfMessageIsArgumentCommand(listOfWords)
+        var pairOfConstructorAndArgument: Pair<KFunction<Any>,Any>? = null
+        checkIfMessageIsArgumentCommand(listOfWords)?.also { pairOfConstructorAndArgument = it }
+
+        return pairOfConstructorAndArgument
 
 
 
@@ -26,7 +29,7 @@ object CommandInterpretation {
                 val typeOfArg = getTypeOfArg(instanceOfConstructor)
 
                 return when(val  argument =  listOfWords[1].castTo(typeOfArg)){
-                    is Outcome.Success -> Pair(instanceOfConstructor, argument)
+                    is Outcome.Success -> Pair(instanceOfConstructor, argument.value)
                     is Outcome.Error -> null
                 }
             }
@@ -54,10 +57,12 @@ object CommandInterpretation {
                 "kotlin.Double" -> {
                     castedArg = this.toDouble()
                     Outcome.Success(castedArg)
+                } else -> {
+                    castedArg = this
+                    Outcome.Success(castedArg)
                 }
             }
-            castedArg = this
-            Outcome.Success(castedArg)
+
         } catch (ex: NumberFormatException){
             Outcome.Error()
         }
