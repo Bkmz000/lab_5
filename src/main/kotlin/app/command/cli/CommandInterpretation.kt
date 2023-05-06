@@ -59,7 +59,7 @@ object CommandInterpretation {
             castedArg = this
             Outcome.Success(castedArg)
         } catch (ex: NumberFormatException){
-            Outcome.Error("Invalid type of argument!")
+            Outcome.Error()
         }
 
     private fun <T> getTypeOfArg(constructor: KFunction<T>): String{
@@ -68,6 +68,6 @@ object CommandInterpretation {
 
     sealed class Outcome<out T : Any> {
         data class Success<out T : Any>(val value: T) : Outcome<T>()
-        data class Error(val message: String, val cause: Exception? = null) : Outcome<Nothing>()
+        data class Error(val message: String? = null, val cause: Exception? = null) : Outcome<Nothing>()
     }
 }
